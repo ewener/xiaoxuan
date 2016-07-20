@@ -1,0 +1,137 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+ 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+ 	<link rel="stylesheet" type="text/css" href="js/jquery-easyui-1.3.6/themes/gray/easyui.css">
+	<link rel="stylesheet" type="text/css" href="js/jquery-easyui-1.3.6/themes/icon.css">
+	<link rel="stylesheet" type="text/css" href="js/jquery-easyui-1.3.6/icons/icon-all.css">
+	<link rel="stylesheet" type="text/css" href="css/main.css">
+</head>
+<body>
+<div class="easyui-layout"  data-options="fit:true" >
+		<div data-options="region:'west',collapsible:true" title="用户角色" style="width:750px;">
+			  <div class="easyui-layout" data-options="fit:true">
+							<div data-options="region:'north',split:false,border:false"  style="height:30px">
+							      <div class="panel-header panel-header-noborder top-toolbar"style="padding: 2px;">
+							            <div style="position: absolute" class="buttonbar">
+											<a class="easyui-linkbutton" href="javascript:void(0);" data-options="plain:true,iconCls:'icon-standard-add'" id="role-add">新增角色</a> 
+											<a class="easyui-linkbutton" href="javascript:void(0);" data-options="plain:true,iconCls:'icon-standard-add'" id="user-add">新增用户</a> 
+											<a class="easyui-linkbutton" href="javascript:void(0);" data-options="plain:true,iconCls:'icon-standard-application-form-edit'" id="user-edit">编辑用户</a> 
+											<a class="easyui-linkbutton" href="javascript:void(0);" data-options="plain:true,iconCls:'icon-standard-application-form-edit'" id="role-edit">编辑角色</a> 
+											<a class="easyui-linkbutton" href="javascript:void(0);" data-options="plain:true,iconCls:'icon-standard-application-form-edit'" id="auth-menu-edit">编辑菜单权限</a> 
+											<a class="easyui-linkbutton" href="javascript:void(0);" data-options="plain:true,iconCls:'icon-standard-application-form-edit'" id="auth-btn-edit">编辑按钮权限</a> 
+										</div>
+							      </div>
+							</div>
+							
+							<div data-options="region:'east',split:false,border:true"  style="width: 373px;">
+							        <table id="roleList" data-options="fit:true" title="角色列表">
+								    </table>
+			  			  </div>
+			  			  <div data-options="region:'west',split:false,border:true"  style="width: 373px;">
+			  			  		 <table id="userList"  data-options="fit:true,toolbar:'#usertb'"  title="用户列表">
+							    </table>
+			  			  </div>
+			  				  <div id="usertb">
+								<input id="searchUser" class="easyui-searchbox"  data-options="prompt:'选择查询条件,输入搜索值',menu:'#usermm'" style="width:350px">
+						</div>
+							<div id="usermm">
+								<div data-options="name:'email',iconCls:'icon-ok'">邮箱</div>
+							</div>
+			 </div>
+		</div>
+		
+		<div data-options="region:'center',iconCls:'icon-ok'">
+			   	<div class="easyui-layout" data-options="fit:true">
+							<div data-options="region:'north',split:true,border:false" title="菜单权限"  style="height:250px">
+								<table id="auth_menu_list"  data-options="fit:true">
+								 </table>
+							</div>
+							<div data-options="region:'center',border:false" title="按钮权限" >
+								<table id="auth_btn_list"  data-options="fit:true">
+								 </table>
+							</div>
+			   </div>
+        </div>
+        <!--  add user start -->
+	<div id="add-user-win" class="easyui-dialog" buttons="#addUserBtn" title="添加用户" data-options="closed:true,iconCls:'icon-save',modal:true" style="width: 350px; height: 250px;">
+		<form id="addUserForm" >
+			<div class="ui-edit">
+				<div class="fitem">
+					<label>邮 箱:</label>
+				    <input id="add_email" name="email" type="text" class="easyui-validatebox" data-options="required:true" />
+				</div>
+				<div class="fitem">
+					<label>密 码:</label> 
+					<input id="add_pwd" name="pwd" type="password" class="easyui-validatebox" required="required" />
+				</div>
+				<div class="fitem" >
+					<label>昵 称:</label>
+				    <input id="add_nickName" name="nickName" type="text" class="easyui-validatebox" data-options="required:false" />
+				</div>
+					<div class="fitem" >
+					<label>角 色:</label>
+				    <input id="add_role" name="role" type="text" class="easyui-validatebox" data-options="required:false" />
+				</div>
+			</div>
+		</form>
+		<div id="addUserBtn" class="dialog-button">
+			<a href="javascript:void(0)" class="easyui-linkbutton" id="btn-adduser-submit">保 存</a> 
+			<a href="javascript:void(0)" class="easyui-linkbutton" id="btn-adduser-close">取 消</a>
+		</div>
+	</div>
+	<!-- add user end  -->
+	
+	 <!--  edit user start -->
+	<div id="edit-user-win" class="easyui-dialog" buttons="#editUserBtn" title="编辑用户" data-options="closed:true,iconCls:'icon-save',modal:true" style="width: 350px; height: 200px;">
+			<div class="ui-edit">
+				<div class="fitem">
+					<label>邮 箱:</label>
+				    <input id="edit_email" name="email"  class="easyui-textbox"  />
+				</div>
+				<div class="fitem" >
+					<label>昵 称:</label>
+				    <input id="edit_nickName" name="nickName"  class="easyui-textbox" />
+				</div>
+					<div class="fitem" >
+					<label>角 色:</label>
+				    <input id="edit_role" name="role" class="easyui-textbox" />
+				</div>
+			</div>
+		<div id="editUserBtn" class="dialog-button">
+			<a href="javascript:void(0)" class="easyui-linkbutton" id="btn-edituser-submit">保 存</a> 
+			<a href="javascript:void(0)" class="easyui-linkbutton" id="btn-edituser-close">取 消</a>
+		</div>
+	</div>
+	<!-- edit user end  -->
+	
+	 <!--  add role start -->
+	<div id="add-role-win" class="easyui-dialog" buttons="#addRoleBtn" title="新增角色" data-options="closed:true,iconCls:'icon-save',modal:true" style="width: 350px; height: 200px;">
+		<form id="addRoleForm" >
+			<div class="ui-edit">
+					<div class="fitem" >
+					<label>角 色:</label>
+				    <input id="add_role2" name="role"  class="easyui-validatebox" data-options="required:true"  />
+				</div>
+				<div class="fitem" >
+					<label>操作权限:</label>
+				    <select  id="add_auth" name="auth" class="asyui-combotree"  multiple></select>
+				</div>
+			</div>
+		</form>
+		<div id="#addRoleBtn" class="dialog-button">
+			<a href="javascript:void(0)" class="easyui-linkbutton" id="btn-addRole-submit">保 存</a> 
+			<a href="javascript:void(0)" class="easyui-linkbutton" id="btn-addRole-close">取 消</a>
+		</div>
+	</div>
+	<!-- add role end  -->
+	
+ </div>
+ 
+	<!-- ** Javascript ** -->
+	<script type="text/javascript" src="js/commons/jquery-2.1.1.min.js"></script>
+	<script type="text/javascript" src="js/jquery-easyui-1.3.6/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="js/jquery-easyui-1.3.6/locale/easyui-lang-zh_CN.js"></script>
+	<script type="text/javascript" src="js/ux/auth.js"></script>
+</body>
+</html>

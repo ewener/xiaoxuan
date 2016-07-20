@@ -1,0 +1,8 @@
+[	
+		 { "id": "1", "name": "默认(天空蓝,推荐)", "path": "default" },
+        { "id": "2", "name": "金属黑(推荐)", "path": "black" },
+        { "id": "3", "name": "银色(推荐)", "path": "bootstrap" },
+        { "id": "4", "name": "灰霾(推荐)", "path": "gray" }
+       
+ ]
+ 

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<applications xmlns="http://www.wabacus.com"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.wabacus.com ../xsd/wabacus.applications.xsd">
+	<page id="report_rs_daily_income_all" js="/webresources/script/validate.js,/wabacusdemo/js/demo.js">
+		<report id="report1" title="全国营业扎帐日报表" dataexport="richexcel"  pagesize="5|10|15|-1"  navigate="${report_rs_daily_income_all.report1.navigate}" 
+			interceptor="com.asiainfo.dmcweb.wabacus.interceptor.DailyIncomeAllReportInterceptor">
+			<print type="default" printpagesize="A4;A3;A2" include="report1{-1}">
+							<![CDATA[
+								jsp{/wabacusdemo/jsptemplate/rs_daily_income.all.jsp}
+							]]>
+			</print>
+			<display>
+				<col column="AT_REG" label="受理地区" filter="condition{city}" rowgroup="true" />
+				<col column="AT_CHL" label="受理渠道" filter="condition{channel}" rowgroup="true" />
+				<col column="AT_EME" label="受理员工" filter="condition{employee}" rowgroup="true" />
+				<col column="BUS_CTG" label="业务类型" rowgroup="true" />
+				<col column="ACT_TYPE" label="帐目类型" rowgroup="true" />
+				<col column="PAYMENT" label="付费方式" rowgroup="true" />
+				<col column="AT_QTY" label="受理量" />
+				<col column="REC_AMT" label="应收金额(元)" />
+				<col column="RLF_AMT" label="减免金额(元)" />
+				<col column="PAY_IN_AMT" label="实收金额(元)" />
+			</display>
+			<subdisplay>
+				<statitems><!-- 定义要用到的统计项 -->
+					<statitem property="item1" value="sum(REC_AMT)" datatype="double" />
+					<statitem property="item2" value="sum(PAY_IN_AMT)" datatype="double" />
+					<statitem property="item3" value="sum(RLF_AMT)" datatype="double" />
+					<statitem property="item4" value="sum(RLF_AMT)" datatype="double" />
+				</statitems>
+				<subrow displaytype="page|report" >
+					<subcol property="sprop1" valuestyleproperty="bgcolor='#CCFAFF' align='left'"/>
+				</subrow>
+				<format>
+						<imports>
+							<import>com.wabacus.util.*</import>
+						</imports>
+						<value>
+						<![CDATA[
+							sprop1="应收全部金额："+item1+"元     实收现金总额："+item2+"元     实收银行金额："+item3+"元     减免全部金额："+item4+"元";
+						]]>
+						</value>
+				</format>
+			</subdisplay>
+			<sql>
+				<value>
+						<![CDATA[select * from RS_DAILY_INCOME_ALL where (SYS_DATE between #begindate# and #enddate#) and  {#condition#}]]>
+				</value>
+				<condition name="province" label="受理省份" >
+					<inputbox type="selectbox" >
+						<option value="-9999" label="---渠道所属省份---"  />
+						<option value="  "  label="全部省份" />
+						<option dataset="@{select distinct province from TBL_AREA}" label="province"	value="province" />
+					</inputbox>
+				</condition>
+				<condition name="city" label="受理市区">
+					<value>
+							<![CDATA[(AT_REG like '%#data#%' )]]>
+					</value>
+					<inputbox type="selectbox" depends="province">
+						<option value="-9999" label="---渠道所属市区---" />
+						<option value="" label="全部市区" />
+						<option dataset="@{select distinct city from TBL_AREA where province like '%#province#%'}"  label="city" value="city" />
+					</inputbox>
+				</condition>
+				<condition name="channel" labelposition="left" label="渠道">
+					<value>
+							<![CDATA[(AT_CHL like '%#data#%' )]]>
+					</value>
+					<inputbox type="selectbox" depends="city">
+						<option value="-9999" label="---选择渠道---" />
+						<option value="" label="全部渠道" />
+						<option dataset="@{select * from CHANEL where CITY_NAME like '%#city#%'}" 
+						label="CHL_NAME" value="CHL_NAME" />
+					</inputbox>
+				</condition>
+				<condition name="employee" labelposition="left" label="员工">
+					<value>
+							<![CDATA[(AT_EME like '%#data#%' )]]>
+					</value>
+					<inputbox type="selectbox" depends="channel" >
+						<option value="-9999" label="---选择员工---" />
+						<option value="" label="全部员工" />
+						<option dataset="@{select * from EMPLOYEE where CHL_NAME  like '%#channel#%'}" 
+						label="EMP_NAME" value="EMP_NAME" />
+					</inputbox>
+				</condition>
+				<condition name="begindate" label="开始日期" labelposition="left" defaultvalue="session{currentDate}">
+					<inputbox type="datepicker" jsvalidate="isNotEmpty(#label#不允许为空)" jsvalidatetype="onsubmit"></inputbox>
+				</condition>
+				<condition name="enddate"  label="结束日期" labelposition="left" defaultvalue="session{currentDate}">
+					<inputbox type="datepicker" jsvalidate="isNotEmpty(#label#不允许为空)" jsvalidatetype="onsubmit"></inputbox>
+				</condition>
+			</sql>
+		</report>
+	</page>
+</applications>

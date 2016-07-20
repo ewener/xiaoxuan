@@ -1,0 +1,1 @@
+url={'easyui':'js/jquery-easyui-1.3.6'}

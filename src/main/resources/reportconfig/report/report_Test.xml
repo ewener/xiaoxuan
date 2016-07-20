@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<applications xmlns="http://www.wabacus.com"
+					xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+					xsi:schemaLocation="http://www.wabacus.com ../xsd/wabacus.applications.xsd">
+	<page id="TOMCAT"  dataexport="richexcel|word">
+		<report id="report1"   pagesize="10">
+			<display>
+				<col column="{sequence:1}" label="序号"/>
+				<col column="tom_id" label="服务器号" clickorderby="true" valuestyleproperty="style='mso-number-format:\@' width='15%'"/>
+				<col column="mem_name" label="内存池名字" clickorderby="true"  filter="true"  width="15%"/>
+				<group label="基本信息">
+					<col column="init_size" label="初始化大小"/>
+					<col column="max_size" label="最大值" clickorderby="true" filter="true" filterwidth="120px"/>
+					<col column="used_size" label="已用大小" clickorderby="true"/>
+					<col column="used_per" label="已用百分比" clickorderby="true"/>
+					<col column="free_per" label="剩余百分比" clickorderby="true"/>
+				</group>
+				<col column="coltime" label="收集时间" />
+			</display>
+			<sql>
+				<value>
+					<![CDATA[SELECT  * from tom_mem_used where {#condition#}]]>
+				</value>
+			<condition name="txtsex1" label="内存池名字">
+					<value>
+						<![CDATA[(mem_name =#data#)]]>
+					</value>
+					<inputbox type="selectbox">
+						<option value="" label="内存池名字"/>
+						<option dataset="@{select mem_name from  tom_mem_used group by mem_name}"  label="mem_name" value="mem_name"/> 
+					</inputbox>
+				</condition>
+			</sql>
+		</report>
+	</page>
+
+	<page xmlns="http://www.wabacus.com" id="singleserieschartpage1">
+		 <tabpanel id="tp1" titlestyle="2" margin="10px">
+			  <report id="report1" title="各员工年度总工资" parenttitle="横向数据集" type="fusioncharts" width="1000px" chartstyleproperty="showValues='0'" chartheight="400" chartwidth="1000" chartype="Column3D.swf">
+				   <display>
+					    <col column="name" label="姓名"></col>
+					    <col column="totalsalary" label="总工资"></col>
+				   </display>
+				   <subdisplay>
+				<![CDATA[
+					<trendlines>
+						<line startValue='200000' color='00cc00' displayValue='平均值' />   
+					</trendlines>     
+				]]>
+				</subdisplay>
+				   <sql>
+					    <select titlelabelcolumn="name">
+						     <value>
+							<![CDATA[SELECT A.no,name,sum(salary) as totalsalary FROM tbl_salary A left join tbl_baseinfo B on A.no=B.no where {#condition#} group by A.no,name order by A.no]]>
+						</value>
+						     <condition name="txtname" label="姓名">
+							      <value>
+								<![CDATA[(name like  '%#data#%')]]>
+							</value>
+						     </condition>
+					    </select>
+				   </sql>
+			  </report>
+			  <report id="report2" title="2008年度各月总工资" parenttitle="纵向数据集" type="fusioncharts" width="1000px" chartstyleproperty="showValues='0'" chartheight="400" chartwidth="1000" chartype="Column3D.swf">
+				   <display>
+					    <col column="jan" label="一月"></col>
+					    <col column="feb" label="二月"></col>
+					    <col column="mar" label="三月"></col>
+					    <col column="apr" label="四月"></col>
+					    <col column="may" label="五月"></col>
+					    <col column="june" label="六月"></col>
+					    <col property="constant1" column="{non-fromdb}">
+					<![CDATA[
+						 <vLine color='FF5904' thickness='2'/>
+					]]>
+					</col>
+					    <col column="july" label="七月"></col>
+					    <col column="aug" label="八月"></col>
+					    <col column="sep" label="九月"></col>
+					    <col column="oct" label="十月"></col>
+					    <col column="nov" label="十一月"></col>
+					    <col column="dece" label="十二月"></col>
+				   </display>
+				   <subdisplay>
+				<![CDATA[
+					<trendlines>             
+						<line startValue='40000' color='00cc00' displayValue='平均值' />     
+					</trendlines>     
+				]]>
+				</subdisplay>
+				   <sql>
+					    <value>
+						<![CDATA[SELECT sum(jan) as jan,sum(feb) as feb,sum(mar) as mar,sum(apr) as apr,sum(may) as may,sum(june) as june,sum(july) as july,sum(aug) as aug,sum(sep) as sep,sum(oct) as oct,sum(nov) as nov,sum(dece) as dece FROM tbl_salary2 where year=2008]]>
+					</value>
+				   </sql>
+			  </report>
+		 </tabpanel>
+	</page>
+	
+</applications>
